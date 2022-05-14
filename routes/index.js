@@ -1,15 +1,15 @@
-import express from 'express'
+const express = require("express");
 
-const authRoute = require("./routes/auth");
-const userRoute = require("./routes/user");
+const authRoute = require("./auth");
+const userRoute = require("./user");
 
-function getRoutes() {
+const getRoutes = () => {
   const router = express.Router()
 
   router.use("/auth", authRoute);
-  router.use("/user", userRoute);
+  router.use("/users", userRoute);
 
   return router
 }
 
-export {getRoutes}
+module.exports = { getRoutes }

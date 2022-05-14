@@ -1,31 +1,32 @@
-const mongoose = require("mongoose");
-
-const userSchema = new mongoose.Schema(
-  {
+const Sequelize = require('sequelize');
+const Model = Sequelize.Model;
+const { db } = require('../services/postgress')
+const { Detail } = require('./Detail')
+// tables
+class User extends Model {}
+User.init({
+    // attributes
     username: {
-      type: String,
-      require: true,
-      min: 6,
-      max: 20,
-      unique: true,
-    },
-    email: {
-      type: String,
-      require: true,
-      max: 50,
-      unique: true,
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true
     },
     password: {
-      type: String,
-      require: true,
-      min: 6,
+      type: Sequelize.STRING,
+      allowNull: false
     },
-    isAdmin: {
-      type: Boolean,
-      default: false,
+    avatar: {
+      type: Sequelize.BLOB,
+      allowNull: true
     },
-  },
-  { timestamps: true }
-);
+}, {
+    sequelize: db,
+    modelName: 'user',
+});
+//relationship
 
-module.exports = mongoose.model("User", userSchema);
+User.belongsTo(Detail);
+Detail.hasOne(User);
+
+
+module.exports = { User };

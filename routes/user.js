@@ -3,7 +3,7 @@ const {
   verifyToken,
   verifyTokenAndAdmin,
   verifyTokenAndUserAuthorization,
-} = require("../controllers/verifyToken");
+} = require("../middleware/verifyToken");
 
 const router = require("express").Router();
 //GET ALL USERS
