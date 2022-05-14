@@ -2,6 +2,9 @@ const Sequelize = require('sequelize');
 const Model = Sequelize.Model;
 const { db } = require('../services/postgress')
 const { Detail } = require('./Detail')
+const { Role } = require('./Role')
+const { Country } = require('./Country')
+const { Group } = require('./Group')
 // tables
 class User extends Model {}
 User.init({
@@ -19,14 +22,25 @@ User.init({
       type: Sequelize.BLOB,
       allowNull: true
     },
+    phone_number: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: true,
+      validate: {
+        isInt: true,
+      }
+    },
+    email: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true,
+        validate: {
+          isEmail: true, 
+        }
+    },
 }, {
     sequelize: db,
     modelName: 'user',
 });
-//relationship
-
-User.belongsTo(Detail);
-Detail.hasOne(User);
-
 
 module.exports = { User };

@@ -1,4 +1,5 @@
-const User = require("../models/User");
+const {User, Detail} = require("../models");
+
 const bcrypt = require("bcrypt");
 const { generateAccessToken, generateRefreshToken } = require("../middleware/generateToken");
 
@@ -10,20 +11,23 @@ const authController = {
     try {
       const salt = await bcrypt.genSalt(10);
       const hashed = await bcrypt.hash(req.body.password, salt);
-
       //Create new user
-      const newUser = await new User({
+
+      const newUser = await User.create({
         username: req.body.username,
         email: req.body.email,
+        phone_number: req.body.phone_number,
         password: hashed,
-      });
-
-      //Save user to DB
-      const user = await newUser.save();
-      res.status(200).json(user);
+      }); 
+     await Detail.create({
+        cccd: req.body.cccd,
+        userId: newUser.id,
+      }); 
+      res.status(200).json({success: true});
     } catch (err) {
-      res.status(500).json(err);
+      res.status(500).json({success: false, data: err?.errors[0]?.message});
     }
+
   },
 
   //LOGIN

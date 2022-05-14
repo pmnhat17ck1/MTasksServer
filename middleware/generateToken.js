@@ -6,7 +6,7 @@ const generateAccessToken = (object) => {
          ...object
       },
       process.env.JWT_ACCESS_KEY,
-      { expiresIn: "30s" }
+      { }
     );
   }
 

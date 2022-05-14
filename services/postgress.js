@@ -6,13 +6,15 @@ const db = new Sequelize(connectString);
 const postgress = async () => {
     await db.authenticate()
     .then(()=> {
+        db.drop();
         console.log('Database postgress connected...')
     }).catch((err)=>console.log(`Connect database postgress error: ${err}`))
-    await db.sync().then(() => {
+    await db.sync({ force: true }).then(() => {
         console.log("sync success");
     }).catch((err)=>{
         console.error("sync fail: " + err);
     });
+    
     return db
 }
 

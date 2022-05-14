@@ -1,42 +1,46 @@
 const Sequelize = require('sequelize');
 const Model = Sequelize.Model;
 const { db } = require('../services/postgress')
+const { Image } = require('./Image')
+const { Type } = require('./Type')
+const { Step } = require('./Step')
+
+
 
 // tables
-class Detail extends Model {}
-Detail.init({
+class Task extends Model {}
+Task.init({
     // attributes
-    first_name: {
+    name: {
+        type: Sequelize.STRING,
+        allowNull: false,
+    },
+    description: {
       type: Sequelize.STRING,
       allowNull: true
     },
-    last_name: {
+    reporter: {
         type: Sequelize.STRING,
         allowNull: true
       },
-    major: {
+    assignee: {
         type: Sequelize.STRING,
         allowNull: true
-      },
-    cccd: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        validate: {
-          isInt: true, 
-        }
     },
-    date: {
+    link_issue: {
+      type: Sequelize.STRING,
+      allowNull: true
+    },
+    due_date: {
         type: Sequelize.DATE,
         allowNull: true
       },
-    description: {
-        type: Sequelize.STRING,
-        allowNull: true,
-    }
 }, {
     sequelize: db,
-    modelName: 'detail',
+    modelName: 'task',
 });
-//relationship
 
-module.exports = { Detail };
+
+
+
+module.exports = { Task };
