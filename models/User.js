@@ -26,17 +26,11 @@ User.init({
       type: Sequelize.STRING,
       allowNull: false,
       unique: true,
-      validate: {
-        isInt: true,
-      }
     },
     email: {
         type: Sequelize.STRING,
         allowNull: false,
         unique: true,
-        validate: {
-          isEmail: true, 
-        }
     },
 }, {
     sequelize: db,

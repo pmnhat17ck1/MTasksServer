@@ -20,10 +20,7 @@ Detail.init({
       },
     cccd: {
         type: Sequelize.STRING,
-        allowNull: false,
-        validate: {
-          isInt: true, 
-        }
+        allowNull: true,
     },
     date: {
         type: Sequelize.DATE,

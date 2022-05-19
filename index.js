@@ -20,7 +20,11 @@ app.use('/api', getRoutes())
 
 
 const port = process.env.PORT || 8000;
+try {
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  });
+} catch (error) {
+  console.log(`Server is down errors: ${error}`);
+}
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});

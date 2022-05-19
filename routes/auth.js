@@ -1,17 +1,34 @@
 const authController = require("../controllers/authController");
-const {requestRefreshToken} = require('../middleware/requestToken')
-
+const {verifyToken, requestToken} = require('../middleware')
+const { check } = require('express-validator');
 const router = require("express").Router();
-const { verifyToken } = require("../middleware/verifyToken");
 
 //REGISTER
-router.post("/register", authController.registerUser);
+router.post("/register", 
+[
+    check('username').isLength({ min: 8 })
+    .withMessage("Username must be at least 8 characters"),
+    check('email').isEmail().normalizeEmail()
+    .withMessage("Email must be in correct format"),
+    check('password').isLength({ min: 8 })
+    .withMessage("Password must be greater than 8 and contain at least one uppercase letter, one lowercase letter, and one number"),
+    check('phone_number').isMobilePhone()
+    .withMessage("Phone number must be in correct format"),
+    check('cccd').isLength({ min: 9 })
+    .withMessage("Cccd number must be at least 9 characters")
+],
+authController.registerUser);
 
 //REFRESH TOKEN
-router.post("/refresh", requestRefreshToken);
+router.post("/refresh", requestToken.requestRefreshToken);
 //LOG IN
-router.post("/login", authController.loginUser);
+router.post("/login", 
+[
+    check('username').isLength({ min: 8 }),
+    check('password').isLength({ min: 6 }),
+],
+authController.loginUser);
 //LOG OUT
-router.post("/logout", verifyToken, authController.logOut);
+router.post("/logout", verifyToken.verifyToken, authController.logOut);
 
 module.exports = router;
