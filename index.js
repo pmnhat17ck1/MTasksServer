@@ -7,17 +7,14 @@ dotenv.config();
 const { getRoutes } = require("./routes/index");
 const { services } = require("./services");
 
-
 app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
 
-
 //services
 services();
 //ROUTES
-app.use('/api', getRoutes())
-
+app.use("/api", getRoutes());
 
 const port = process.env.PORT || 8000;
 try {
@@ -27,4 +24,3 @@ try {
 } catch (error) {
   console.log(`Server is down errors: ${error}`);
 }
-

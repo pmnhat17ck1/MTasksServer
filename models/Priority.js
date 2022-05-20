@@ -1,18 +1,20 @@
-const Sequelize = require('sequelize');
+const Sequelize = require("sequelize");
 const Model = Sequelize.Model;
-const { db } = require('../services/postgress')
+const { db } = require("../services/postgress");
 // tables
 class Priority extends Model {}
-Priority.init({
+Priority.init(
+  {
     // attributes
     name: {
-        type: Sequelize.STRING,
-        allowNull: false,
+      type: Sequelize.STRING,
+      allowNull: false,
     },
-}, {
+  },
+  {
     sequelize: db,
-    modelName: 'priority',
-});
-
+    modelName: "priority",
+  }
+);
 
 module.exports = { Priority };

@@ -1,28 +1,30 @@
-const Sequelize = require('sequelize');
+const Sequelize = require("sequelize");
 const Model = Sequelize.Model;
-const { db } = require('../services/postgress')
-const { Task } = require('./Task')
+const { db } = require("../services/postgress");
+const { Task } = require("./Task");
 
 // tables
 class Group extends Model {}
-Group.init({
+Group.init(
+  {
     // attributes
     title: {
-        type: Sequelize.STRING,
-        allowNull: false,
+      type: Sequelize.STRING,
+      allowNull: false,
     },
     sub_title: {
-        type: Sequelize.STRING,
-        allowNull: false,
+      type: Sequelize.STRING,
+      allowNull: false,
     },
     icon: {
-        type: Sequelize.BLOB,
-        allowNull: true
-    }
-}, {
+      type: Sequelize.BLOB,
+      allowNull: true,
+    },
+  },
+  {
     sequelize: db,
-    modelName: 'group',
-});
-
+    modelName: "group",
+  }
+);
 
 module.exports = { Group };

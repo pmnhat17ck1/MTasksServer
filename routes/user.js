@@ -7,18 +7,16 @@ const {
 
 const router = require("express").Router();
 //GET ALL USERS
-router.get("/", verifyToken, userController.getAllUsers);
-
-
+router.get("/", verifyTokenAndAdmin, userController.getAllUsers);
 
 //ADMIN
 //CREATE USER
-router.post("/addNew", verifyTokenAndAdmin, userController.createUser);
+router.post("/add", verifyTokenAndAdmin, userController.createUser);
 
 //UPDATE USER
-router.put("/:id/update", verifyTokenAndUserAuthorization, userController.updateUser);
+router.put("/:id", verifyTokenAndUserAuthorization, userController.updateUser);
 
 //DELETE USER
-router.delete("/:id/delete", verifyTokenAndAdmin, userController.deleteUser);
+router.delete("/:id", verifyTokenAndAdmin, userController.deleteUser);
 
 module.exports = router;

@@ -1,27 +1,29 @@
-const Sequelize = require('sequelize');
+const Sequelize = require("sequelize");
 const Model = Sequelize.Model;
-const { db } = require('../services/postgress')
-const { User } = require('./User')
+const { db } = require("../services/postgress");
+const { User } = require("./User");
 // tables
 class Step extends Model {}
-Step.init({
+Step.init(
+  {
     // attributes
     name: {
-        type: Sequelize.STRING,
-        allowNull: false,
+      type: Sequelize.STRING,
+      allowNull: false,
     },
     description: {
-        type: Sequelize.STRING,
-        allowNull: false,
+      type: Sequelize.STRING,
+      allowNull: false,
     },
     color: {
-        type: Sequelize.STRING,
-        allowNull: false,
+      type: Sequelize.STRING,
+      allowNull: false,
     },
-}, {
+  },
+  {
     sequelize: db,
-    modelName: 'step',
-});
-
+    modelName: "step",
+  }
+);
 
 module.exports = { Step };

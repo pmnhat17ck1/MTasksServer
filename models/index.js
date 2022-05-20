@@ -1,17 +1,15 @@
-const { Image } = require('./Image')
-const { Type } = require('./Type')
-const { Step } = require('./Step')
-const { User } = require('./User')
-const { Group } = require('./Group')
-const { Role } = require('./Role')
-const { Country } = require('./Country')
-const { Task } = require('./Task')
-const { Detail } = require('./Detail')
-const { Priority } = require('./Priority')
-const { Notification } = require('./Notification')
-const { Token } = require('./Token')
-
-
+const { Image } = require("./Image");
+const { Type } = require("./Type");
+const { Step } = require("./Step");
+const { User } = require("./User");
+const { Group } = require("./Group");
+const { Role } = require("./Role");
+const { Country } = require("./Country");
+const { Task } = require("./Task");
+const { Detail } = require("./Detail");
+const { Priority } = require("./Priority");
+const { Notification } = require("./Notification");
+const { Token } = require("./Token");
 
 ////relationship
 User.hasOne(Detail);
@@ -47,79 +45,82 @@ Task.belongsTo(Step);
 Priority.hasMany(Image);
 Image.belongsTo(Priority);
 
+const checkTable = async () => {
+  const role = await Role.count();
+  const country = await Country.count();
+  if (role > 0 && country > 0) {
+    return;
+  }
+  Country.bulkCreate([
+    {
+      name: "Việt nam",
+      continent_name: "vi",
+    },
+    {
+      name: "US",
+      continent_name: "en",
+    },
+  ]);
+  Role.bulkCreate([
+    {
+      name: "admin",
+    },
+    {
+      name: "member",
+    },
+    {
+      name: "owner",
+    },
+  ]);
 
-const checkTable = async() => {
-    const role = await Role.count()
-    const country = await Country.count()
-    if(role>0 && country>0) {
-        return
-    }
-    Country.bulkCreate([{
-        name: 'Việt nam',
-        continent_name: 'vi',
+  Priority.bulkCreate([
+    {
+      name: "medium",
     },
     {
-        name: 'US',
-        continent_name: 'en',
-    }])
-    Role.bulkCreate([{
-        name: 'admin',
+      name: "high",
     },
     {
-        name: 'member',
+      name: "highest",
+    },
+  ]);
+  Step.bulkCreate([
+    {
+      name: "To do",
+      description: "",
+      color: "",
     },
     {
-        name: 'owner',
-    }])
+      name: "In progress",
+      description: "",
+      color: "",
+    },
+    {
+      name: "Review",
+      description: "",
+      color: "",
+    },
+    {
+      name: "Done",
+      description: "",
+      color: "",
+    },
+  ]);
+};
 
-    Priority.bulkCreate([{
-        name: 'medium',
-    },
-    {
-        name: 'high',
-    },
-    {
-        name: 'highest',
-    }])
-    Step.bulkCreate([{
-        name: 'To do',
-        description: '',
-        color: ''
-    },
-    {
-        name: 'In progress',
-        description: '',
-        color: ''
-    },
-    {
-        name: 'Review',
-        description: '',
-        color: ''
-    },
-    {
-        name: 'Done',
-        description: '',
-        color: ''
-    }   
-    ])
-}
-
-
-
-
-checkTable()
+checkTable();
 
 module.exports = {
-    Image,
-    Type,
-    Step,
-    User,
-    Group,
-    Role,
-    Task,
-    Country,
-    Detail,
-    Token,
-    Notification,
-    Priority,
-}
+  Image,
+  Type,
+  Step,
+  User,
+  Group,
+  Role,
+  Task,
+  Country,
+  Detail,
+  Token,
+  Notification,
+  Priority,
+};

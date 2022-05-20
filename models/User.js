@@ -1,26 +1,27 @@
-const Sequelize = require('sequelize');
+const Sequelize = require("sequelize");
 const Model = Sequelize.Model;
-const { db } = require('../services/postgress')
-const { Detail } = require('./Detail')
-const { Role } = require('./Role')
-const { Country } = require('./Country')
-const { Group } = require('./Group')
+const { db } = require("../services/postgress");
+const { Detail } = require("./Detail");
+const { Role } = require("./Role");
+const { Country } = require("./Country");
+const { Group } = require("./Group");
 // tables
 class User extends Model {}
-User.init({
+User.init(
+  {
     // attributes
     username: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: true,
     },
     password: {
       type: Sequelize.STRING,
-      allowNull: false
+      allowNull: false,
     },
     avatar: {
       type: Sequelize.BLOB,
-      allowNull: true
+      allowNull: true,
     },
     phone_number: {
       type: Sequelize.STRING,
@@ -28,13 +29,15 @@ User.init({
       unique: true,
     },
     email: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: true,
     },
-}, {
+  },
+  {
     sequelize: db,
-    modelName: 'user',
-});
+    modelName: "user",
+  }
+);
 
 module.exports = { User };
