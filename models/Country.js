@@ -8,7 +8,6 @@ Country.init({
     name: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true
     },
     continent_name: {
         type: Sequelize.STRING,

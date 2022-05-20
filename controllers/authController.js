@@ -1,8 +1,8 @@
 const {User, Detail, Token} = require("../models");
 const bcrypt = require("bcrypt");
 const { generateAccessToken, generateRefreshToken } = require("../middleware/generateToken");
-let refreshTokens = [];
 const { validationResult } = require('express-validator');
+const { SendSMS, sendEmail } =require('../services')
 
 const authController = {
   //REGISTER
@@ -31,8 +31,11 @@ const authController = {
         userId: newUser.id,
       }); 
       res.status(200).json({success: true});
+      await sendEmail(newUser.email, 'Register mtask', `register success!`)
     } catch (err) {
       res.status(500).json({success: false});
+      await sendEmail(req.body.email, 'Register mtask', `register fail!`)
+  
     }
 
   },
@@ -60,12 +63,22 @@ const authController = {
       }
       if (user && validPassword) {
         //Generate access token
-        const accessToken = await generateAccessToken({id:user.id});
+        const accessToken = await generateAccessToken({user_id: user.id});
  
         //Generate refresh token
-        const refreshToken = await generateRefreshToken({id:user.id});
- 
-        refreshTokens.push(refreshToken);
+        const refreshToken = await generateRefreshToken({user_id: user.id});
+        
+        //find token to update
+        const tokenById = await Token.findOne({ where: {
+          userId: user.id, 
+        }});
+        if(tokenById) {
+          tokenById.update({
+            accessToken,
+            refreshToken,
+          })
+          tokenById.save()
+        }
         //STORE REFRESH TOKEN IN COOKIE
         res.cookie("refreshToken", refreshToken, {
           httpOnly: true,

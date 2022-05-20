@@ -51,9 +51,17 @@ Image.belongsTo(Priority);
 const checkTable = async() => {
     const role = await Role.count()
     const country = await Country.count()
-    if(role>0 && country>0 ) {
+    if(role>0 && country>0) {
         return
     }
+    Country.bulkCreate([{
+        name: 'Việt nam',
+        continent_name: 'vi',
+    },
+    {
+        name: 'US',
+        continent_name: 'en',
+    }])
     Role.bulkCreate([{
         name: 'admin',
     },
@@ -63,14 +71,7 @@ const checkTable = async() => {
     {
         name: 'owner',
     }])
-     Country.bulkCreate([{
-        name: 'Việt nam',
-        continent_name: 'vi',
-    },
-    {
-        name: 'US',
-        continent_name: 'en',
-    }])
+
     Priority.bulkCreate([{
         name: 'medium',
     },
@@ -99,12 +100,14 @@ const checkTable = async() => {
         name: 'Done',
         description: '',
         color: ''
-    }
-])
+    }   
+    ])
 }
+
+
+
+
 checkTable()
-
-
 
 module.exports = {
     Image,

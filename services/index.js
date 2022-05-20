@@ -1,5 +1,7 @@
 const { connect_mongoose } = require("./mongoose");
 const { postgress } = require('./postgress')
+const { SendSMS } = require('./sms')
+const { sendEmail } = require('./email')
 const services = async () => {
     // connect_mongoose()
     try {
@@ -9,4 +11,4 @@ const services = async () => {
     }
    
 }
-module.exports = { services };
+module.exports = { services, SendSMS, sendEmail };

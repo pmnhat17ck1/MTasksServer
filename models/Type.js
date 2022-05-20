@@ -9,7 +9,6 @@ Type.init({
     name: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true
     },
     color: {
         type: Sequelize.STRING,

@@ -11,7 +11,7 @@ router.post("/register",
     check('email').isEmail().normalizeEmail()
     .withMessage("Email must be in correct format"),
     check('password').isLength({ min: 8 })
-    .withMessage("Password must be greater than 8 and contain at least one uppercase letter, one lowercase letter, and one number"),
+    .withMessage("Password must be greater than 8"),
     check('phone_number').isMobilePhone()
     .withMessage("Phone number must be in correct format"),
     check('cccd').isLength({ min: 9 })
@@ -24,8 +24,8 @@ router.post("/refresh", requestToken.requestRefreshToken);
 //LOG IN
 router.post("/login", 
 [
-    check('username').isLength({ min: 8 }),
-    check('password').isLength({ min: 6 }),
+    check('username').isLength({ min: 8 }).withMessage("Username must be at least 8 characters"),
+    check('password').isLength({ min: 8 }).withMessage("Password must be greater than 8"),
 ],
 authController.loginUser);
 //LOG OUT

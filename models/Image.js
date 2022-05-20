@@ -12,7 +12,6 @@ Image.init({
     path: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true
     },
 }, {
     sequelize: db,
