@@ -1,12 +1,12 @@
 const { User, Detail, Token } = require("../models");
-const bcrypt = require("bcrypt");
+const { jsonData, hashPasword, comparePasword } = require("../utils");
 const {
   generateAccessToken,
   generateRefreshToken,
 } = require("../middleware/generateToken");
 const { validationResult } = require("express-validator");
 const { SendSMS, sendEmail } = require("../services");
-const { userRes } = require("../utils");
+const { userRes, decodedToken, checkExpiredToken } = require("../utils");
 
 const authController = {
   //REGISTER
@@ -14,16 +14,15 @@ const authController = {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+        return res.status(400).json(jsonData(false, errors.array()));
       }
-      const salt = await bcrypt.genSalt(10);
-      const hashed = await bcrypt.hash(req.body.password, salt);
+      const passwordHash = await hashPasword(req.body.password);
       //Create new user
       const newUser = await User.create({
         username: req.body.username,
         email: req.body.email,
         phone_number: req.body.phone_number,
-        password: hashed,
+        password: passwordHash,
         roleId: 2,
         countryId: 1,
       });
@@ -38,7 +37,10 @@ const authController = {
       const accessToken = await generateAccessToken({ user_id: newUser.id });
 
       //Generate refresh token
-      const refreshToken = await generateRefreshToken({ user_id: newUser.id });
+      const refreshToken = await generateRefreshToken(
+        { user_id: newUser.id },
+        "2h"
+      );
 
       if (accessToken && refreshToken) {
         //find token to update
@@ -54,11 +56,10 @@ const authController = {
           });
         tokenById.save();
       }
-      res.status(200).json({ success: true });
+      res.status(200).json(jsonData(true, "register success!"));
       await sendEmail(newUser.email, "Register mtask", `register success!`);
     } catch (err) {
-      res.status(500).json({ success: false });
-      await sendEmail(req.body.email, "Register mtask", `register fail!`);
+      res.status(500).json(jsonData(false, err?.errors[0]?.message));
     }
   },
 
@@ -67,7 +68,7 @@ const authController = {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+        return res.status(400).json(jsonData(false, errors.array()));
       }
       const username = req.body.username;
       const user = await User.findOne({
@@ -76,40 +77,47 @@ const authController = {
         },
       });
       if (!user) {
-        return res
-          .status(404)
-          .json({ success: false, data: "Incorrect username" });
+        return res.status(404).json(jsonData(false, "Incorrect username"));
       }
-      const validPassword = await bcrypt.compare(
+      const validPassword = await comparePasword(
         req.body.password,
         user.password
       );
       if (!validPassword) {
-        return res
-          .status(404)
-          .json({ success: false, data: "Incorrect password" });
+        return res.status(404).json(jsonData(false, "Incorrect password"));
       }
+
       if (user && validPassword) {
         //Generate access token
         const accessToken = await generateAccessToken({ user_id: user.id });
 
         //Generate refresh token
-        const refreshToken = await generateRefreshToken({ user_id: user.id });
+        const refreshToken = await generateRefreshToken(
+          { user_id: user.id },
 
-        if (accessToken && refreshToken) {
-          //find token to update
-          const tokenById = await Token.findOne({
-            where: {
-              userId: user.id,
-            },
-          });
-          tokenById &&
+        );
+
+        //find token to update
+        const tokenById = await Token.findOne({
+          where: {
+            userId: user.id,
+          },
+        });
+        if (tokenById) {
+          const expAccess = decodedToken(tokenById?.accessToken)?.exp;
+          const expRefresh = decodedToken(tokenById?.refreshToken)?.exp;
+          const expiredAccess = checkExpiredToken(expAccess);
+          const expiredRefresh = checkExpiredToken(expRefresh);
+          if (expiredAccess)
             tokenById.update({
               accessToken,
+            });
+          if (expiredRefresh)
+            tokenById.update({
               refreshToken,
             });
-          tokenById.save();
         }
+        tokenById.save();
 
         //STORE REFRESH TOKEN IN COOKIE
         res.cookie("refreshToken", refreshToken, {
@@ -119,13 +127,16 @@ const authController = {
           sameSite: "strict",
         });
         const userNew = userRes(user?.dataValues);
-        return res.status(200).json({
-          success: true,
-          data: { ...userNew, accessToken, refreshToken },
-        });
+        return res.status(200).json(
+          jsonData(true, {
+            ...userNew,
+            accessToken: tokenById?.accessToken,
+            refreshToken: tokenById?.refreshToken,
+          })
+        );
       }
     } catch (error) {
-      return res.status(500).json({ success: false });
+      return res.status(500).json(jsonData(false, error));
     }
   },
 
@@ -134,7 +145,7 @@ const authController = {
     //Clear cookies when user logs out
     // refreshTokens = refreshTokens.filter((token) => token !== req.body.token);
     res.clearCookie("refreshToken");
-    res.status(200).json("Logged out successfully!");
+    res.status(200).json(jsonData(true, "Logged out successfully!"));
   },
 };
 

@@ -68,9 +68,6 @@ const checkTable = async () => {
     {
       name: "member",
     },
-    {
-      name: "owner",
-    },
   ]);
 
   Priority.bulkCreate([

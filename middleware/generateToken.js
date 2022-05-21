@@ -11,7 +11,7 @@ const generateAccessToken = (object, exp = "365d") => {
   );
 };
 
-const generateRefreshToken = (object, exp = 3600) => {
+const generateRefreshToken = (object, exp = "300s") => {
   const serectKey = process.env.JWT_REFRESH_KEY;
   return jwt.sign(
     {
