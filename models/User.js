@@ -33,6 +33,11 @@ User.init(
       allowNull: false,
       unique: true,
     },
+    isActive: {
+      type: Sequelize.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
   },
   {
     sequelize: db,

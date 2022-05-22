@@ -9,7 +9,8 @@ const priorityRoute = require("./priority");
 const roleRoute = require("./role");
 const stepRoute = require("./step");
 const groupRoute = require("./group");
-
+const imageRoute = require("./image");
+const taskRoute = require("./task");
 
 const getRoutes = () => {
   const router = express.Router();
@@ -19,6 +20,7 @@ const getRoutes = () => {
     verifyTokenRefresh,
     functionController.changePassword
   );
+
   router.use("/auth", authRoute);
   router.use("/users", userRoute);
   router.use("/countries", countryRoute);
@@ -26,6 +28,8 @@ const getRoutes = () => {
   router.use("/roles", roleRoute);
   router.use("/steps", stepRoute);
   router.use("/groups", groupRoute);
+  router.use("/images", imageRoute);
+  router.use("/tasks", taskRoute);
 
   return router;
 };

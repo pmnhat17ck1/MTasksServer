@@ -75,13 +75,13 @@ const verifyTokenAndAdmin = (req, res, next) => {
   });
 };
 const verifyTokenAndOwnerOfGroup = (req, res, next) => {
-  verifyToken(req, res, async() => {
-    const group = await Group.findOne({where: {id: req.user.id}})
-    if(!group){
+  verifyToken(req, res, async () => {
+    const group = await Group.findOne({ where: { userId: req.user.id } });
+    if (!group) {
       return res.status(500).json("You're not in Group!");
     }
     const owner = req.user.id == group?.userId;
-    const admin = owner && req.user.roleId == 1
+    const admin = owner && req.user.roleId == 1;
     if (admin || owner) {
       next();
     } else {

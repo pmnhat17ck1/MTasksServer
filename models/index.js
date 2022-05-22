@@ -30,17 +30,24 @@ Group.belongsTo(User);
 User.hasMany(Notification);
 Notification.belongsTo(User);
 
-Group.hasMany(Task);
+Group.hasMany(Task, {
+  onDelete: 'cascade', 
+  foreignKey: { allowNull: false },
+  hooks: true
+});
 Task.belongsTo(Group);
 
 Task.hasMany(Image);
 Image.belongsTo(Task);
 
-Type.hasOne(Task);
+Type.hasMany(Task);
 Task.belongsTo(Type);
 
 Step.hasOne(Task);
 Task.belongsTo(Step);
+
+Priority.hasMany(Task);
+Task.belongsTo(Priority);
 
 Priority.hasMany(Image);
 Image.belongsTo(Priority);
@@ -101,6 +108,16 @@ const checkTable = async () => {
       name: "Done",
       description: "",
       color: "",
+    },
+  ]);
+  Type.bulkCreate([
+    {
+      name: "Feature",
+      color: "#4BADE8",
+    },
+    {
+      name: "Bug",
+      color: "#E5493A",
     },
   ]);
 };

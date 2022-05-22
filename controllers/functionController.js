@@ -4,7 +4,7 @@ const {
   jsonData,
   hashPasword,
   decodedToken,
-  codeActivation
+  codeActivation,
 } = require("../utils");
 const { SendSMS, sendEmail } = require("../services");
 

@@ -92,10 +92,7 @@ const authController = {
         const accessToken = await generateAccessToken({ user_id: user.id });
 
         //Generate refresh token
-        const refreshToken = await generateRefreshToken(
-          { user_id: user.id },
-
-        );
+        const refreshToken = await generateRefreshToken({ user_id: user.id });
 
         //find token to update
         const tokenById = await Token.findOne({

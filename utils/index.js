@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
+const { Notification } = require("../models");
 const userRes = (ob) => {
   let { password, ...userNew } = ob || {};
   return userNew;
@@ -34,7 +35,16 @@ const decodedToken = (token) => {
 const checkExpiredToken = (exp = 0) => {
   return Date.now() >= exp * 1000;
 };
-const codeActivation = crypto.randomBytes(3).toString("hex").toUpperCase()
+const codeActivation = crypto.randomBytes(3).toString("hex").toUpperCase();
+
+const createNoti = async (title='', description='', type='', userId='') => {
+  return await Notification.create({
+    title: title,
+    description: description,
+    type: type,
+    userId: userId,
+  });
+};
 
 module.exports = {
   userRes,
@@ -44,4 +54,5 @@ module.exports = {
   hashPasword,
   comparePasword,
   codeActivation,
+  createNoti,
 };
