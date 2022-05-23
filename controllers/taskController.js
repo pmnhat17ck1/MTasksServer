@@ -12,6 +12,18 @@ const taskController = {
       res.status(500).json(jsonData(false, err));
     }
   },
+  getAllTaskGroup: async (req, res) => {
+    try {
+      const tasks = await Task.findAll({
+        where: {
+          groupId: req.body?.groupId,
+        },
+      });
+      res.status(200).json(jsonData(true, tasks));
+    } catch (err) {
+      res.status(500).json(jsonData(false, err));
+    }
+  },
   getAllTaskUser: async (req, res) => {
     try {
       const tasks = await Task.findAll({

@@ -1,6 +1,7 @@
 const express = require("express");
 const functionController = require("../controllers/functionController");
 const { verifyTokenRefresh } = require("../middleware/verifyToken");
+const { check } = require("express-validator");
 
 const authRoute = require("./auth");
 const userRoute = require("./user");
@@ -15,6 +16,16 @@ const taskRoute = require("./task");
 const getRoutes = () => {
   const router = express.Router();
   router.post("/forgetPassword", functionController.forgetPassword);
+  router.post("/forgetPassword/verify_otp", functionController.verify_otp);
+  router.post("/forgetPassword/resetPassword",[
+    check("password")
+    .isLength({ min: 8 })
+    .withMessage("Password must be greater than 8"),
+    check("passwordConfirm")
+    .isLength({ min: 8 })
+    .withMessage("Password confirm must be greater than 8"),
+  ],functionController.resetPassword);
+
   router.post(
     "/changePassword",
     verifyTokenRefresh,

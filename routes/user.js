@@ -9,7 +9,9 @@ const {
 
 const router = require("express").Router();
 router.post("/activation", verifyToken, userController.activation);
-router.post("/changePassword", userController.changePassword);
+router.get("/getCode", verifyToken, userController.getCode);
+router.post("/changePassword", verifyToken, userController.changePassword);
+
 //GET ALL USERS
 router.get("/", verifyTokenAndAdmin, userController.getAllUsers);
 
@@ -18,14 +20,19 @@ router.get("/:id/detail", verifyToken, userController.detail);
 router.put(
   "/:id/detail",
   [
-    check("first_name").isEmpty().withMessage("First name not empty"),
-    check("last_name").isEmpty().withMessage("Last name not empty"),
-    check("date")
-      .isDate()
-      .withMessage("Birth is date"),
+    check("first_name"),
+    check("last_name"),
+    check("date"),
     check("cccd")
       .isLength({ min: 9 })
       .withMessage("Cccd number must be at least 9 characters"),
+    check("email")
+      .isEmail()
+      .normalizeEmail()
+      .withMessage("Email must be in correct format"),
+    check("phone_number")
+      .isMobilePhone()
+      .withMessage("Phone number must be in correct format"),
   ],
   verifyToken,
   userController.detailUpdate

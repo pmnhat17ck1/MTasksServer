@@ -2,13 +2,11 @@ const jwt = require("jsonwebtoken");
 const { User, Group } = require("../models");
 const { jsonData, decodedToken, checkExpiredToken } = require("../utils");
 const verifyToken = (req, res, next) => {
-  //ACCESS TOKEN FROM HEADER, REFRESH TOKEN FROM COOKIE
-  const token = req.headers.token;
+  const token = req.headers.authorization;
   // const refreshToken = req.cookies.refreshToken;
-
   if (token) {
     const serectKey = process.env.JWT_ACCESS_KEY;
-    const accessToken = token || token.split(" ")[1];
+    const accessToken = token.split(" ")[1];
     jwt.verify(accessToken, serectKey, async (err, item) => {
       if (err) {
         return res.status(403).json("Token is not valid!");

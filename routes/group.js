@@ -7,14 +7,15 @@ const router = require("express").Router();
 
 //GET ALL group
 router.get("/", verifyToken, groupController.getAll);
+router.get("/GroupOwner", verifyToken, groupController.getGroup);
 
 //CREATE group
 router.post("/add", verifyToken, groupController.create);
 
 //UPDATE group
-router.put("/:id", verifyTokenAndOwnerOfGroup, groupController.update);
+router.put("/:id", verifyToken, groupController.update);
 
 //DELETE group
-router.delete("/:id", verifyTokenAndOwnerOfGroup, groupController.delete);
+router.delete("/:id", verifyToken, groupController.delete);
 
 module.exports = router;

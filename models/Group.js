@@ -20,6 +20,10 @@ Group.init(
       type: Sequelize.BLOB,
       allowNull: true,
     },
+    isOwner: {
+      type: Sequelize.BOOLEAN,
+      allowNull: true,
+    },
   },
   {
     sequelize: db,

@@ -1,10 +1,10 @@
 const Pusher = require("pusher");
 
 const pusher = new Pusher({
-  appId: "1412322",
-  key: "92edf92e65868532621f",
-  secret: "3633c686940084d3b080",
-  cluster: "ap1",
+  appId: process.env.NODE_APP_PUSHER_APP_ID,
+  key:  process.env.NODE_APP_PUSHER_APP_KEY,
+  secret: process.env.NODE_APP_PUSHER_APP_SECRET,
+  cluster: process.env.NODE_APP_PUSHER_APP_CLUSTER,
   useTLS: true,
 });
 const sendNoti = (object, channel = "mtask", event = "notification") => {

@@ -8,6 +8,12 @@ const router = require("express").Router();
 
 //GET ALL step
 router.get("/", verifyToken, taskController.getAll);
+router.get("/taskOfGroup", [
+  check("groupId")
+  .isNumeric()
+  .isLength({ min: 0, max: 1 })
+  .withMessage("assigneeId must be number"),
+] ,verifyToken, taskController.getAllTaskGroup);
 
 //CREATE step
 router.post(

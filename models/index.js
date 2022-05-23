@@ -10,6 +10,8 @@ const { Detail } = require("./Detail");
 const { Priority } = require("./Priority");
 const { Notification } = require("./Notification");
 const { Token } = require("./Token");
+const { generateAccessToken } = require("../middleware/generateToken");
+
 
 ////relationship
 User.hasOne(Detail);
@@ -58,7 +60,7 @@ const checkTable = async () => {
   if (role > 0 && country > 0) {
     return;
   }
-  Country.bulkCreate([
+  await Country.bulkCreate([
     {
       name: "Việt nam",
       continent_name: "vi",
@@ -68,7 +70,7 @@ const checkTable = async () => {
       continent_name: "en",
     },
   ]);
-  Role.bulkCreate([
+  await Role.bulkCreate([
     {
       name: "admin",
     },
@@ -77,7 +79,7 @@ const checkTable = async () => {
     },
   ]);
 
-  Priority.bulkCreate([
+  await Priority.bulkCreate([
     {
       name: "medium",
     },
@@ -88,7 +90,7 @@ const checkTable = async () => {
       name: "highest",
     },
   ]);
-  Step.bulkCreate([
+  await  Step.bulkCreate([
     {
       name: "To do",
       description: "",
@@ -110,7 +112,7 @@ const checkTable = async () => {
       color: "",
     },
   ]);
-  Type.bulkCreate([
+  await Type.bulkCreate([
     {
       name: "Feature",
       color: "#4BADE8",
@@ -120,6 +122,31 @@ const checkTable = async () => {
       color: "#E5493A",
     },
   ]);
+  const user = await User.create( 
+    {
+      username: 'admin123',
+      password: '$2b$10$XonxxewUUoY0IgxXj.hiPO4Gi8j5HKlF80IqMbIta9JfXmj23cU1W',
+      avatar: null,
+      phone_number: '111111111',
+      email: 'admin123@gmail.com',
+      isActive: true,
+      countryId: 1,
+      roleId:1,
+    }
+  );
+  const accessToken = await generateAccessToken({ user_id: user.id });
+
+  await  Detail.create( 
+    {
+      userId: user?.id,
+    }
+  );
+  await  Token.create( 
+    {
+      accessToken: accessToken,
+      userId: user.id,
+    }
+  );
 };
 
 checkTable();
