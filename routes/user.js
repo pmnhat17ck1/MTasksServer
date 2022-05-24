@@ -13,7 +13,7 @@ router.get("/getCode", verifyToken, userController.getCode);
 router.post("/changePassword", verifyToken, userController.changePassword);
 
 //GET ALL USERS
-router.get("/", verifyTokenAndAdmin, userController.getAllUsers);
+router.get("/", verifyToken, userController.getAllUsers);
 
 //DETAIL
 router.get("/:id/detail", verifyToken, userController.detail);

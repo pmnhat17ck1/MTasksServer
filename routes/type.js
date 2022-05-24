@@ -1,12 +1,12 @@
 const typeController = require("../controllers/typeController");
 
-const { verifyTokenAndAdmin } = require("../middleware/verifyToken");
+const { verifyTokenAndAdmin, verifyToken } = require("../middleware/verifyToken");
 
 const router = require("express").Router();
 //ADMIN
 
 //GET ALL type
-router.get("/", verifyTokenAndAdmin, typeController.getAll);
+router.get("/", verifyToken, typeController.getAll);
 
 //CREATE type
 router.post("/add", verifyTokenAndAdmin, typeController.create);

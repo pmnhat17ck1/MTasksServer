@@ -66,16 +66,17 @@ const taskController = {
   },
   create: async (req, res) => {
     try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json(jsonData(false, errors.array()));
-      }
+      console.log('444444', 'voday')
       const foundGroup = await Group.findOne({ userId: req.body.groupId });
+      console.log('5555555', 'voday')
+
       if (!foundGroup) {
         return res
           .status(500)
           .json(jsonData(false, "Task should belong to one group!"));
       }
+      console.log('66666666', req.body)
+
       await Task.create({
         name: req.body.name,
         description: req.body.description,
@@ -83,9 +84,9 @@ const taskController = {
         assignee: req.body.assignee,
         link_issue: req.body.link_issue,
         due_date: req.body.due_date,
-        typeId: 1,
-        stepId: 1,
-        priorityId: 1,
+        typeId: req.body.typeId,
+        stepId: req.body.stepId,
+        priorityId: req.body.priorityId,
         groupId: req.body.groupId,
       });
       await createNoti(

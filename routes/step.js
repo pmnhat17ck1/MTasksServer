@@ -1,12 +1,12 @@
 const stepController = require("../controllers/stepController");
 
-const { verifyTokenAndAdmin } = require("../middleware/verifyToken");
+const { verifyTokenAndAdmin, verifyToken } = require("../middleware/verifyToken");
 
 const router = require("express").Router();
 //ADMIN
 
 //GET ALL step
-router.get("/", verifyTokenAndAdmin, stepController.getAll);
+router.get("/", verifyToken, stepController.getAll);
 
 //CREATE step
 router.post("/add", verifyTokenAndAdmin, stepController.create);

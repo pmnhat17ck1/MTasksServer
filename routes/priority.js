@@ -1,12 +1,12 @@
 const priorityController = require("../controllers/priorityController");
 
-const { verifyTokenAndAdmin } = require("../middleware/verifyToken");
+const { verifyTokenAndAdmin, verifyToken } = require("../middleware/verifyToken");
 
 const router = require("express").Router();
 //ADMIN
 
 //GET ALL priority
-router.get("/", verifyTokenAndAdmin, priorityController.getAll);
+router.get("/", verifyToken, priorityController.getAll);
 
 //CREATE priority
 router.post("/add", verifyTokenAndAdmin, priorityController.create);

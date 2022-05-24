@@ -12,6 +12,7 @@ const stepRoute = require("./step");
 const groupRoute = require("./group");
 const imageRoute = require("./image");
 const taskRoute = require("./task");
+const typeRoute = require("./type");
 
 const getRoutes = () => {
   const router = express.Router();
@@ -41,6 +42,8 @@ const getRoutes = () => {
   router.use("/groups", groupRoute);
   router.use("/images", imageRoute);
   router.use("/tasks", taskRoute);
+  router.use("/types", typeRoute);
+
 
   return router;
 };
