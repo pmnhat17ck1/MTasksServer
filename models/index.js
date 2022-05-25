@@ -57,7 +57,7 @@ Image.belongsTo(Priority);
 const checkTable = async () => {
   const role = await Role.count();
   const country = await Country.count();
-  if (role > 0 && country > 0) {
+  if (country > 0) {
     return;
   }
   await Country.bulkCreate([
