@@ -55,11 +55,6 @@ Priority.hasMany(Image);
 Image.belongsTo(Priority);
 
 const checkTable = async () => {
-  const role = await Role.count();
-  const country = await Country.count();
-  if (country > 0) {
-    return;
-  }
   await Country.bulkCreate([
     {
       name: "Việt nam",
