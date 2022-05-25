@@ -55,7 +55,12 @@ Priority.hasMany(Image);
 Image.belongsTo(Priority);
 
 const checkTable = async () => {
-  Country.bulkCreate([
+  const role = await Role.count();
+  const country = await Country.count();
+  if (country > 0) {
+    return;
+  }
+  await Country.bulkCreate([
     {
       name: "Việt nam",
       continent_name: "vi",
@@ -65,7 +70,7 @@ const checkTable = async () => {
       continent_name: "en",
     },
   ]);
-  Role.bulkCreate([
+  await Role.bulkCreate([
     {
       name: "admin",
     },
@@ -74,7 +79,7 @@ const checkTable = async () => {
     },
   ]);
 
-  Priority.bulkCreate([
+  await Priority.bulkCreate([
     {
       name: "medium",
     },
@@ -85,7 +90,7 @@ const checkTable = async () => {
       name: "highest",
     },
   ]);
-   Step.bulkCreate([
+  await  Step.bulkCreate([
     {
       name: "To do",
       description: "",
@@ -107,7 +112,7 @@ const checkTable = async () => {
       color: "",
     },
   ]);
-   Type.bulkCreate([
+  await Type.bulkCreate([
     {
       name: "Feature",
       color: "#4BADE8",
