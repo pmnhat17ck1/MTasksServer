@@ -107,7 +107,7 @@ const checkTable = async () => {
       color: "",
     },
   ]);
-  gita Type.bulkCreate([
+   Type.bulkCreate([
     {
       name: "Feature",
       color: "#4BADE8",
