@@ -5,7 +5,6 @@ const db = new Sequelize(connectString);
 const clearDB = { force: true };
 const postgress = async () => {
   await db
-    .authenticate()
     .then(() => {
       console.log("Database postgress connected...");
     })
