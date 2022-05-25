@@ -4,8 +4,11 @@ const connectString =
 const db = new Sequelize(connectString,  {
   ssl: true,
   dialectOptions: {
-    ssl: true,
-  },
+    ssl: {
+      require: true,
+      rejectUnauthorized: false
+    }
+  }
 },);
 const clearDB = { force: true };
 const postgress = async () => {
