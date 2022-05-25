@@ -14,7 +14,10 @@ router.post("/changePassword", verifyToken, userController.changePassword);
 
 //GET ALL USERS
 router.get("/", verifyToken, userController.getAllUsers);
-
+//noti
+router.delete("/notiDeleteAll", verifyToken, userController.notificationsDeleleALL);
+router.get("/noti", verifyToken, userController.notifications);
+router.delete("/noti/:id", verifyToken, userController.notificationDelete);
 //DETAIL
 router.get("/:id/detail", verifyToken, userController.detail);
 router.put(

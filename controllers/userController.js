@@ -1,4 +1,4 @@
-const { User, Detail, Token } = require("../models");
+const { User, Detail, Token, Notification } = require("../models");
 const {
   jsonData,
   hashPasword,
@@ -12,6 +12,47 @@ const { validationResult } = require("express-validator");
 const { SendSMS, sendEmail } = require("../services");
 
 const userController = {
+  notificationsDeleleALL: async (req, res) => {
+    try {
+        await Notification.destroy({
+          where: { userId: req.user?.id },
+        })
+        return res.status(200).json(jsonData(true, "Delete success!"));
+    } catch (err) {
+      res.status(500).json(jsonData(false, err));
+    }
+  },
+  notifications: async (req, res) => {
+    try {
+        const notiOfUser = await Notification.findAll({
+          where: {userId: req.user?.id},
+          order: [["createdAt", "DESC"]] 
+        });
+        if (!notiOfUser) {
+          res.status(500).json(jsonData(false, "Notification not exist!"));
+        }
+        return res.status(200).json(jsonData(true, notiOfUser));
+    } catch (err) {
+      res.status(500).json(jsonData(false, err));
+    }
+  },
+  notificationDelete: async (req, res) => {
+    try {
+      if (req.params.id) {
+        const notiOfUser = await Notification.findOne({
+          where: { userId: req.user?.id },
+        });
+        if (!notiOfUser) {
+          res.status(500).json(jsonData(false, "Detail not exist!"));
+        }
+        return res.status(200).json(jsonData(true, detailOfUser));
+      } else {
+        res.status(500).json(jsonData(false, "Wrong noti!"));
+      }
+    } catch (err) {
+      res.status(500).json(jsonData(false, err));
+    }
+  },
   //DETAIL
   detail: async (req, res) => {
     try {
