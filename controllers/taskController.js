@@ -66,17 +66,12 @@ const taskController = {
   },
   create: async (req, res) => {
     try {
-      console.log('444444', 'voday')
       const foundGroup = await Group.findOne({ userId: req.body.groupId });
-      console.log('5555555', 'voday')
-
       if (!foundGroup) {
         return res
           .status(500)
           .json(jsonData(false, "Task should belong to one group!"));
       }
-      console.log('66666666', req.body)
-
       await Task.create({
         name: req.body.name,
         description: req.body.description,
