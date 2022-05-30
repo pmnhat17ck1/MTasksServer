@@ -1,7 +1,6 @@
 const Sequelize = require("sequelize");
 const Model = Sequelize.Model;
 const { db } = require("../services/postgress");
-const { Task } = require("./Task");
 
 // tables
 class Group extends Model {}
