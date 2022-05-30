@@ -35,9 +35,17 @@ const decodedToken = (token) => {
 const checkExpiredToken = (exp = 0) => {
   return Date.now() >= exp * 1000;
 };
-const codeActivation = crypto.randomBytes(3).toString("hex").toUpperCase();
 
-const createNoti = async (title='', description='', type='', userId='') => {
+const generateActivationCode = () => {
+  return crypto.randomBytes(3).toString("hex").toUpperCase();
+};
+
+const createNoti = async (
+  title = "",
+  description = "",
+  type = "",
+  userId = ""
+) => {
   return await Notification.create({
     title: title,
     description: description,
@@ -53,6 +61,6 @@ module.exports = {
   checkExpiredToken,
   hashPasword,
   comparePasword,
-  codeActivation,
+  generateActivationCode,
   createNoti,
 };

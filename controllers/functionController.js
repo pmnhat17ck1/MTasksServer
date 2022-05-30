@@ -4,13 +4,12 @@ const {
   jsonData,
   hashPasword,
   decodedToken,
-  codeActivation,
+  generateActivationCode,
 } = require("../utils");
 const { validationResult } = require("express-validator");
 const { SendSMS, sendEmail } = require("../services");
 
 const functionController = {
-
   verify_otp: async (req, res) => {
     try {
       const user = await User.findOne({
@@ -25,13 +24,14 @@ const functionController = {
         return res.status(500).json(jsonData(false, "Code not exist!"));
       }
       const tokenOfUser = await Token.findOne({
-        userId: user?.id
-      })
-      const codeRefreshDatabase = decodedToken(tokenOfUser?.refreshToken)?.code
-      if(req.body.code !== codeRefreshDatabase) {
+        userId: user?.id,
+      });
+      const codeRefreshDatabase = decodedToken(tokenOfUser?.refreshToken)?.code;
+
+      if (req.body.code !== codeRefreshDatabase) {
         return res.status(500).json(jsonData(false, "Incorect code!"));
       }
-       res.status(200).json(jsonData(true, { isVerify: true }));
+      res.status(200).json(jsonData(true, { isVerify: true }));
     } catch (err) {
       res.status(500).json(jsonData(false, err));
     }
@@ -54,7 +54,9 @@ const functionController = {
             jsonData(false, "Please enter password and password confirm right!")
           );
       }
-      const userFound = await User.findOne({where: {email: req.body.email}})
+      const userFound = await User.findOne({
+        where: { email: req.body.email },
+      });
       if (
         userFound?.dataValues?.password === req.body.passwordConfirm ||
         userFound?.dataValues?.password === req.body.password
@@ -66,11 +68,9 @@ const functionController = {
       const user = req?.user;
       const hashed = await hashPasword(req.body.password);
       if (!user) {
-        await userFound.update(
-          {
-            password: hashed,
-          }
-        );
+        await userFound.update({
+          password: hashed,
+        });
         return res.status(200).json(jsonData(true));
       }
     } catch (err) {
@@ -87,22 +87,25 @@ const functionController = {
       if (!user) {
         return res.status(500).json(jsonData(false, "Incorrect email"));
       }
+      const codeActivation = generateActivationCode();
+
       const refreshToken = generateRefreshToken({
         user_id: user.id,
         code: `${codeActivation}`,
       });
       const tokenOfUser = await Token.findOne({
-        userId: user?.id
-      })
-      tokenOfUser.update({
-        refreshToken: refreshToken
-      })
-      const code = decodedToken(refreshToken)?.code;
+        userId: user?.id,
+      });
+
+      await tokenOfUser.update({
+        refreshToken: refreshToken,
+      });
+
       res.status(200).json(jsonData(true, { refreshToken, isStart: true }));
       await sendEmail(
         user?.email,
         "forget password",
-        `The code for authentication: ${code}`
+        `The code for authentication: ${codeActivation}`
       );
     } catch (err) {
       res.status(500).json(jsonData(false, err));
@@ -138,20 +141,20 @@ const functionController = {
       }
       const user = req?.user;
       const hashed = await hashPasword(req.body.password);
-     if(user.password)
-      if (!user) {
-        await User.update(
-          {
-            password: hashed,
-          },
-          {
-            where: {
-              id: req.user_id,
+      if (user.password)
+        if (!user) {
+          await User.update(
+            {
+              password: hashed,
             },
-          }
-        );
-        return res.status(200).json(jsonData(true));
-      }
+            {
+              where: {
+                id: req.user_id,
+              },
+            }
+          );
+          return res.status(200).json(jsonData(true));
+        }
     } catch (err) {
       return res.status(500).json(jsonData(false, err));
     }

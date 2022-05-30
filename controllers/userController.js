@@ -4,7 +4,7 @@ const {
   hashPasword,
   comparePasword,
   decodedToken,
-  codeActivation,
+  generateActivationCode,
 } = require("../utils");
 const { generateRefreshToken } = require("../middleware/generateToken");
 const { validationResult } = require("express-validator");
@@ -118,15 +118,16 @@ const userController = {
       const tokenOfUser = await Token.findOne({
         userId: user?.dataValues?.id,
       });
+      const codeActivation = generateActivationCode();
       const refreshToken = generateRefreshToken({
         user_id: user?.dataValues?.id,
         code: `${codeActivation}`,
       });
-      tokenOfUser.update({
+      await tokenOfUser.update({
         refreshToken: refreshToken,
       });
       const code = decodedToken(refreshToken)?.code;
-
+      console.log('44444444444', code)
       res.status(200).json(jsonData(true));
       await sendEmail(
         user?.email,
@@ -151,7 +152,7 @@ const userController = {
       if (req.body.code !== codeRefreshDatabase) {
         return res.status(500).json(jsonData(false, "Incorect code!"));
       }
-      user.update({ isActive: true });
+      await user.update({ isActive: true });
       res.status(200).json(jsonData(true, { ...user, password: null }));
     } catch (err) {
       res.status(500).json(jsonData(false, err));

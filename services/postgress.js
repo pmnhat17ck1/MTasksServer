@@ -1,14 +1,15 @@
 const Sequelize = require("sequelize");
 const connectString =
   process.env.DATABASE_URL || "postgres://postgres:admin@localhost:5432/mtasks";
-const db = new Sequelize(connectString, {
+const db = new Sequelize(connectString);
+const ssl = {
   dialectOptions: {
     ssl: {
       require: true,
       rejectUnauthorized: false,
     },
   },
-});
+};
 const clearDB = { force: true };
 const postgress = async () => {
   await db
