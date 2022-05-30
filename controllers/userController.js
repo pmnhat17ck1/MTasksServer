@@ -118,11 +118,11 @@ const userController = {
       const tokenOfUser = await Token.findOne({
         userId: user?.dataValues?.id,
       });
-      const refreshToken = await generateRefreshToken({
+      const refreshToken = generateRefreshToken({
         user_id: user?.dataValues?.id,
         code: `${codeActivation}`,
       });
-      await tokenOfUser.update({
+      tokenOfUser.update({
         refreshToken: refreshToken,
       });
       const code = decodedToken(refreshToken)?.code;
@@ -151,7 +151,7 @@ const userController = {
       if (req.body.code !== codeRefreshDatabase) {
         return res.status(500).json(jsonData(false, "Incorect code!"));
       }
-      await user.update({ isActive: true });
+      user.update({ isActive: true });
       res.status(200).json(jsonData(true, { ...user, password: null }));
     } catch (err) {
       res.status(500).json(jsonData(false, err));

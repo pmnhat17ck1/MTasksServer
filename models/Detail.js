@@ -3,7 +3,22 @@ const Model = Sequelize.Model;
 const { db } = require("../services/postgress");
 
 // tables
-class Detail extends Model {}
+class Detail extends Model {
+  static async countAll() {
+    return await Detail?.findAll({});
+  }
+  static async add(userId, first_name, last_name, major, cccd, date, description) {
+    return await Detail.create({
+      userId,
+      first_name,
+      last_name,
+      major,
+      cccd,
+      date,
+      description,
+    });
+  }
+}
 Detail.init(
   {
     // attributes

@@ -54,99 +54,34 @@ Task.belongsTo(Priority);
 Priority.hasMany(Image);
 Image.belongsTo(Priority);
 
+
 const checkTable = async () => {
-  const role = await Role.count();
-  const country = await Country.count();
-  if (country > 0) {
+
+  const role = await Role?.countAll();
+  const country = await Country?.countAll();
+  const priority = await Priority?.countAll();
+  const step = await Step?.countAll();
+  const type = await Type?.countAll();
+  if (role?.length > 0 || country?.length > 0 || priority?.length > 0 || step?.length > 0 || type?.length > 0) {
     return;
   }
-  await Country.bulkCreate([
-    {
-      name: "Việt nam",
-      continent_name: "vi",
-    },
-    {
-      name: "US",
-      continent_name: "en",
-    },
-  ]);
-  await Role.bulkCreate([
-    {
-      name: "admin",
-    },
-    {
-      name: "member",
-    },
-  ]);
-
-  await Priority.bulkCreate([
-    {
-      name: "medium",
-    },
-    {
-      name: "high",
-    },
-    {
-      name: "highest",
-    },
-  ]);
-  await  Step.bulkCreate([
-    {
-      name: "To do",
-      description: "",
-      color: "",
-    },
-    {
-      name: "In progress",
-      description: "",
-      color: "",
-    },
-    {
-      name: "Review",
-      description: "",
-      color: "",
-    },
-    {
-      name: "Done",
-      description: "",
-      color: "",
-    },
-  ]);
-  await Type.bulkCreate([
-    {
-      name: "Feature",
-      color: "#4BADE8",
-    },
-    {
-      name: "Bug",
-      color: "#E5493A",
-    },
-  ]);
-  const user = await User.create( 
-    {
-      username: 'admin123',
-      password: '$2b$10$XonxxewUUoY0IgxXj.hiPO4Gi8j5HKlF80IqMbIta9JfXmj23cU1W',
-      avatar: null,
-      phone_number: '111111111',
-      email: 'admin123@gmail.com',
-      isActive: true,
-      countryId: 1,
-      roleId:1,
-    }
-  );
+  Country.add("Việt nam", "vi");
+  Country.add("US", "en");
+  Role.add("admin")
+  Role.add("member")
+  Priority.add("medium")
+  Priority.add("high")
+  Priority.add("highest")
+  Step.add("To do", "", "");
+  Step.add("In progress", "", "")
+  Step.add("Review", "", "")
+  Step.add("Done", "", "")
+  Type.add("Feature", "#4BADE8")
+  Type.add("Bug", "#E5493A")
+  const user = User.add('admin123', '$2b$10$XonxxewUUoY0IgxXj.hiPO4Gi8j5HKlF80IqMbIta9JfXmj23cU1W','111111111', 'admin123@gmail.com', true, 1, 1 )
   const accessToken = await generateAccessToken({ user_id: user.id });
-
-  await  Detail.create( 
-    {
-      userId: user?.id,
-    }
-  );
-  await  Token.create( 
-    {
-      accessToken: accessToken,
-      userId: user.id,
-    }
-  );
+  Detail.add(user?.id)
+  Token.add(user.id, accessToken)
 };
 
 checkTable();

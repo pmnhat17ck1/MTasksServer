@@ -6,7 +6,30 @@ const { Role } = require("./Role");
 const { Country } = require("./Country");
 const { Group } = require("./Group");
 // tables
-class User extends Model {}
+class User extends Model {
+  static async countAll() {
+    return await User?.findAll({});
+  }
+  static async add(
+    username,
+    password,
+    phone_number,
+    email,
+    isActive,
+    countryId,
+    roleId
+  ) {
+    return await User.create({
+      username,
+      password,
+      phone_number,
+      email,
+      isActive,
+      countryId,
+      roleId,
+    });
+  }
+}
 User.init(
   {
     // attributes

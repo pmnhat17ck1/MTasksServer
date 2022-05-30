@@ -87,14 +87,14 @@ const functionController = {
       if (!user) {
         return res.status(500).json(jsonData(false, "Incorrect email"));
       }
-      const refreshToken = await generateRefreshToken({
+      const refreshToken = generateRefreshToken({
         user_id: user.id,
         code: `${codeActivation}`,
       });
       const tokenOfUser = await Token.findOne({
         userId: user?.id
       })
-      await tokenOfUser.update({
+      tokenOfUser.update({
         refreshToken: refreshToken
       })
       const code = decodedToken(refreshToken)?.code;

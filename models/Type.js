@@ -3,7 +3,17 @@ const Model = Sequelize.Model;
 const { db } = require("../services/postgress");
 const { User } = require("./User");
 // tables
-class Type extends Model {}
+class Type extends Model {
+  static async countAll() {
+    return await Type?.findAll({});
+  }
+  static async add(name, color) {
+    return await Type.create({
+      name,
+      color,
+    });
+  }
+}
 Type.init(
   {
     // attributes
