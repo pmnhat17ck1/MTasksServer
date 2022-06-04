@@ -2,7 +2,7 @@ const { User, Detail, Token, Notification } = require("../models");
 const {
   jsonData,
   hashPasword,
-  comparePasword,
+  checkExpiredToken,
   decodedToken,
   generateActivationCode,
 } = require("../utils");
@@ -14,24 +14,24 @@ const { SendSMS, sendEmail } = require("../services");
 const userController = {
   notificationsDeleleALL: async (req, res) => {
     try {
-        await Notification.destroy({
-          where: { userId: req.user?.id },
-        })
-        return res.status(200).json(jsonData(true, "Delete success!"));
+      await Notification.destroy({
+        where: { userId: req.user?.id },
+      });
+      return res.status(200).json(jsonData(true, "Delete success!"));
     } catch (err) {
       res.status(500).json(jsonData(false, err));
     }
   },
   notifications: async (req, res) => {
     try {
-        const notiOfUser = await Notification.findAll({
-          where: {userId: req.user?.id},
-          order: [["createdAt", "DESC"]] 
-        });
-        if (!notiOfUser) {
-          res.status(500).json(jsonData(false, "Notification not exist!"));
-        }
-        return res.status(200).json(jsonData(true, notiOfUser));
+      const notiOfUser = await Notification.findAll({
+        where: { userId: req.user?.id },
+        order: [["createdAt", "DESC"]],
+      });
+      if (!notiOfUser) {
+        res.status(500).json(jsonData(false, "Notification not exist!"));
+      }
+      return res.status(200).json(jsonData(true, notiOfUser));
     } catch (err) {
       res.status(500).json(jsonData(false, err));
     }
@@ -116,7 +116,7 @@ const userController = {
     try {
       const user = req?.user;
       const tokenOfUser = await Token.findOne({
-        userId: user?.dataValues?.id,
+        where: { userId: user?.dataValues?.id },
       });
       const codeActivation = generateActivationCode();
       const refreshToken = generateRefreshToken({
@@ -126,13 +126,12 @@ const userController = {
       await tokenOfUser.update({
         refreshToken: refreshToken,
       });
-      const code = decodedToken(refreshToken)?.code;
-      console.log('44444444444', code)
+      await tokenOfUser.save();
       res.status(200).json(jsonData(true));
       await sendEmail(
         user?.email,
         "activation",
-        `The code for authentication: ${code}`
+        `The code for authentication: ${codeActivation}`
       );
     } catch (err) {
       res.status(500).json(jsonData(false, err));
@@ -146,12 +145,24 @@ const userController = {
       }
       const user = req?.user;
       const tokenOfUser = await Token.findOne({
-        userId: user?.dataValues?.id,
+        where: { userId: user?.dataValues?.id },
+        raw:true,
       });
-      const codeRefreshDatabase = decodedToken(tokenOfUser?.refreshToken)?.code;
-      if (req.body.code !== codeRefreshDatabase) {
+      
+      const codeRefreshDatabase = decodedToken(tokenOfUser?.refreshToken);
+      
+      if (req.body.code !== codeRefreshDatabase?.code) {
         return res.status(500).json(jsonData(false, "Incorect code!"));
       }
+     
+      const refreshExp = codeRefreshDatabase?.exp;
+      const refreshExpired = checkExpiredToken(refreshExp);
+      if (refreshExpired) {
+        return res
+          .status(500)
+          .json(jsonData(false, "Refresh token was expired!"));
+      }
+
       await user.update({ isActive: true });
       res.status(200).json(jsonData(true, { ...user, password: null }));
     } catch (err) {
@@ -261,11 +272,11 @@ const userController = {
       await user.update({
         password: hashed,
       });
-      console.log('6666', 'voday')
+      console.log("6666", "voday");
 
-       res.status(200).json(jsonData(true));
+      res.status(200).json(jsonData(true));
     } catch (err) {
-       res.status(500).json(jsonData(false, err));
+      res.status(500).json(jsonData(false, err));
     }
   },
 };

@@ -6,7 +6,11 @@ const { Type } = require("./Type");
 const { Step } = require("./Step");
 
 // tables
-class Task extends Model {}
+class Task extends Model {
+  static async countAll() {
+    return await Task?.findAll({});
+  }
+}
 Task.init(
   {
     // attributes

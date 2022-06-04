@@ -1,15 +1,30 @@
-const { User, Token } = require("../models");
+const { User, Token, Task, Step, Priority, Type } = require("../models");
 const { generateRefreshToken } = require("../middleware/generateToken");
 const {
   jsonData,
   hashPasword,
   decodedToken,
   generateActivationCode,
+  checkExpiredToken,
 } = require("../utils");
 const { validationResult } = require("express-validator");
 const { SendSMS, sendEmail } = require("../services");
 
 const functionController = {
+  dashboard: async (req, res) => {
+    try {
+      const types = await Type.countAll();
+      const steps = await Step.countAll();
+      const priorities = await Priority.countAll();
+      const tasks = await Task.countAll();
+      const users = await User.countAll();
+      res
+        .status(200)
+        .json(jsonData(true, { types, steps, priorities, tasks, users }));
+    } catch (error) {
+      res.status(500).json(jsonData(false, err));
+    }
+  },
   verify_otp: async (req, res) => {
     try {
       const user = await User.findOne({
@@ -24,12 +39,21 @@ const functionController = {
         return res.status(500).json(jsonData(false, "Code not exist!"));
       }
       const tokenOfUser = await Token.findOne({
-        userId: user?.id,
+        where: {
+          userId: user?.id,
+        },
+        raw: true,
       });
-      const codeRefreshDatabase = decodedToken(tokenOfUser?.refreshToken)?.code;
-
-      if (req.body.code !== codeRefreshDatabase) {
+      const codeRefreshDatabase = decodedToken(tokenOfUser?.refreshToken);
+      if (req.body.code !== codeRefreshDatabase?.code) {
         return res.status(500).json(jsonData(false, "Incorect code!"));
+      }
+      const refreshExp = codeRefreshDatabase?.exp;
+      const refreshExpired = checkExpiredToken(refreshExp);
+      if (refreshExpired) {
+        return res
+          .status(500)
+          .json(jsonData(false, "Refresh token was expired!"));
       }
       res.status(200).json(jsonData(true, { isVerify: true }));
     } catch (err) {
@@ -94,12 +118,13 @@ const functionController = {
         code: `${codeActivation}`,
       });
       const tokenOfUser = await Token.findOne({
-        userId: user?.id,
+        where: { userId: user?.id },
       });
 
       await tokenOfUser.update({
         refreshToken: refreshToken,
       });
+      await tokenOfUser.save();
 
       res.status(200).json(jsonData(true, { refreshToken, isStart: true }));
       await sendEmail(

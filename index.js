@@ -10,6 +10,8 @@ const { services } = require("./services");
 app.use(cors());
 app.use(cookieParser());
 app.use(express.urlencoded())
+app.use(express.static('uploads'));
+
 app.use(express.json());
 
 //services

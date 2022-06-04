@@ -14,40 +14,40 @@ const { generateAccessToken } = require("../middleware/generateToken");
 
 const create_relationship = () => {
   ////relationship
-  User.hasOne(Detail, { onDelete: 'cascade', hooks:true });
+  User.hasOne(Detail);
   Detail.belongsTo(User);
 
-  User.hasOne(Token, { onDelete: 'cascade', hooks:true });
+  User.hasOne(Token);
   Token.belongsTo(User);
 
-  Role.hasMany(User, { onDelete: 'cascade', hooks:true });
+  Role.hasMany(User);
   User.belongsTo(Role);
 
-  Country.hasOne(User, { onDelete: 'cascade', hooks:true });
+  Country.hasOne(User);
   User.belongsTo(Country);
 
-  User.hasMany(Group, { onDelete: 'cascade', hooks:true });
+  User.hasMany(Group);
   Group.belongsTo(User);
 
-  User.hasMany(Notification, { onDelete: 'cascade', hooks:true });
+  User.hasMany(Notification);
   Notification.belongsTo(User);
 
-  Group.hasMany(Task, { onDelete: 'cascade', hooks:true });
+  Group.hasMany(Task);
   Task.belongsTo(Group);
 
-  Task.hasMany(Image, { onDelete: 'cascade', hooks:true });
+  Task.hasMany(Image);
   Image.belongsTo(Task);
 
-  Type.hasMany(Task, { onDelete: 'cascade', hooks:true });
+  Type.hasMany(Task);
   Task.belongsTo(Type);
 
-  Step.hasOne(Task, { onDelete: 'cascade', hooks:true });
+  Step.hasOne(Task);
   Task.belongsTo(Step);
 
-  Priority.hasMany(Task, { onDelete: 'cascade', hooks:true });
+  Priority.hasMany(Task);
   Task.belongsTo(Priority);
 
-  Priority.hasMany(Image, { onDelete: 'cascade', hooks:true });
+  Priority.hasMany(Image);
   Image.belongsTo(Priority);
 };
 create_relationship();
