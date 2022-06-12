@@ -19,7 +19,7 @@ const postgress = async () => {
     })
     .catch((err) => console.log(`Connect database postgress error: ${err}`));
   await db
-    .sync(clearDB)
+    .sync()
     .then(() => {
       console.log("sync success");
     })
